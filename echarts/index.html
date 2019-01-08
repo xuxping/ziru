@@ -1,0 +1,104 @@
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Page Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="static/bower_components/jquery/dist/jquery.min.js"></script>
+
+    <script src="static/bower_components/echarts/dist/echarts.min.js"></script>
+    <script src="http://api.map.baidu.com/api?v=2.0&ak=Ct87UD6WUtyBzjau26XCmEVS7xaBE6wU"></script>
+    <script src="static/bower_components/echarts/dist/extension/bmap.js"></script>
+
+</head>
+
+<body>
+    <div id="chart" style="width:1800px; height:1100px"></div>
+
+    <script>
+        var text = '{% raw data %}';
+        var data = JSON.parse(text);
+
+        var text1 = '{% raw geoCoordMap %}';
+        var geoCoordMap = JSON.parse(text1);
+
+
+        var convertData = function (data) {
+            var res = [];
+            for (var i = 0; i < data.length; i++) {
+                var geoCoord = geoCoordMap[data[i].name];
+                if (geoCoord) {
+                    res.push(geoCoord.concat(1))
+                    // res.push({
+                    //     name: data[i].name,
+                    //     value: geoCoord.concat(data[i].value / 1000)
+                    // });
+                }
+            }
+            return res;
+        };
+
+        var option = {
+            // backgroundColor: '#404a59',
+            title: {
+                text: '租房价格',
+                left: 'center',
+                textStyle: {
+                    color: '#fff'
+                }
+            },
+            tooltip: {
+                trigger: 'item'
+            },
+            bmap: {
+                center: [116.46, 39.92],
+                zoom: 14,
+                roam: true,
+            },
+            visualMap: {
+                show: false,
+                top: 'top',
+                min: 0,
+                max: 15,
+                seriesIndex: 0,
+                calculable: true,
+                inRange: {
+                    color: ['blue', 'blue', 'green', 'yellow', 'red']
+                }
+            },
+            series: [{
+                    name: 'Top 5',
+                    type: 'heatmap',
+                    coordinateSystem: 'bmap',
+                    data: convertData(data),
+                    pointSize: 4,
+                    blurSize: 10
+                    // symbolSize: function (val) {
+                    //     return val[2];
+                    // },
+                    // label: {
+                    //     normal: {
+                    //         formatter: '{b}',
+                    //         position: 'right',
+                    //         show: false
+                    //     }
+                    // },
+                    // itemStyle: {
+                    //     normal: {
+                    //         color: '#000',
+                    //         shadowBlur: 1,
+                    //         shadowColor: '#333'
+                    //     }
+                    // },
+                },
+
+            ]
+        };
+        var myChart = echarts.init(document.getElementById('chart'))
+
+        myChart.setOption(option);
+    </script>
+</body>
+
+</html>
