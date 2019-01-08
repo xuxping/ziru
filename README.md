@@ -7,4 +7,4 @@
 ![整租](imgs/zhengzu.png)  
 
 ### 房源分布  
-![房源分布](imgs/zhengzu.png) 
+![房源分布](imgs/house_map.png) 
